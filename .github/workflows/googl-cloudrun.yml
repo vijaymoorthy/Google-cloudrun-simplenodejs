@@ -26,7 +26,7 @@ jobs:
     env:
       # Replace $PROJECT_ID with your project ID
       #IMAGE_NAME: gcr.io/$PROJECT_ID/app
-      IMAGE_NAME: australia-southeast2-docker.pkg.dev/proj-kub-project/mysampleapp/myapp
+      IMAGE_NAME: australia-southeast2-docker.pkg.dev/proj-kub-project/mysampleapp/myapp:yellow
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
