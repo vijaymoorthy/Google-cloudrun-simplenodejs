@@ -1,10 +1,13 @@
 name: Deploy to Artifact Registry
 on:
-  # Allows you to run this workflow manually from the Actions tab
+# Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      REPO_HOST: australia-southeast2-docker.pkg.dev          
+      IMAGE_TAG: $REPO_HOST/proj-kub-project/mysampleapp/myapp:yellow
     steps:
       - name: Checkout      
         uses: actions/checkout@v2
@@ -14,21 +17,27 @@ jobs:
         with:
           project_id: proj-kub-project
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-
-      - name: Define repository host
-        env:
-          REPO_HOST: australia-southeast2-docker.pkg.dev
-
+          export_default_credentials: true     
+      
       - name: Configure Docker
         run: |-
-          gcloud auth configure-docker $REPO_HOST
-
-      - name: Define image tag
-        env:
-          IMAGE_TAG: $REPO_HOST/proj-kub-project/mysampleapp/myapp:yellow
-
+            gcloud auth configure-docker $REPO_HOST
+          
       - name: Build and push image to Google Artifact Registry
         run: |-
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
+          
+      - id: deploy
+        name: Deploy Docker image
+        uses: "google-github-actions/deploy-cloudrun@v0"
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          region: australia-southeast2
+          service: app
+          flags: --port=8080
+  
+        # Example of using the output
+      - name: Test URL
+        run: curl "${{ steps.deploy.outputs.url }}"
+
