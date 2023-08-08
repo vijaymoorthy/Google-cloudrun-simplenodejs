@@ -42,7 +42,7 @@ jobs:
           password: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}   
 
       - name: Build Docker image
-        run: docker build . -t $IMAGE_NAME      
+        run: docker build . --build-arg PORT=4000 -t $IMAGE_NAME      
 
       - name: Push Docker image
         run: docker push $IMAGE_NAME
