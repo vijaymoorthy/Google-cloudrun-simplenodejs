@@ -17,3 +17,11 @@
 #### gcloud run deploy myapp --image australia-southeast2-docker.pkg.dev/proj-kub-project/mysampleapp/myapp:blue
 ![image](https://github.com/vijaymoorthy/Google-cloudrun-simplenodejs/assets/5792365/776e7f60-9ede-47e5-884b-5d6a9754666e)
 
+### the url
+![image](https://github.com/vijaymoorthy/Google-cloudrun-simplenodejs/assets/5792365/6cf04cf9-d521-40d5-9e97-f780d1d4aa94)
+
+### the final
+![image](https://github.com/vijaymoorthy/Google-cloudrun-simplenodejs/assets/5792365/5c0f4401-930d-4947-a3d6-d7741e2dda7f)
+
+
+
