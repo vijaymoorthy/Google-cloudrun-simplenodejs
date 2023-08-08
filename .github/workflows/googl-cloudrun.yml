@@ -1,66 +1,36 @@
-# This is a basic workflow to help you get started with Actions
-name: Google cloud run deploy
+name: Deploy to Artifact Registry
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
- # push:
- #   branches: [main]
+  push:
+    branches: [ main ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "deploy"
   deploy:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Add "id-token" with the intended permissions.
-    permissions:
-      contents: "read"
-      id-token: "write"
-      packages: "write"
-
-    env:
-      # Replace $PROJECT_ID with your project ID
-      #IMAGE_NAME: gcr.io/$PROJECT_ID/app
-      IMAGE_NAME: australia-southeast2-docker.pkg.dev/proj-kub-project/mysampleapp/myapp:yellow
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v2
-        
-      - name: Login to GCR
-        uses: docker/login-action@v2
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.3.0
         with:
-          registry: gcr.io
-          username: _json_key
-          password: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}   
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
 
-      - name: Build Docker image
-        run: docker build . --build-arg PORT=4000 -t $IMAGE_NAME      
+      - name: Define repository host
+        env:
+          REPO_HOST: australia-southeast2-docker.pkg.dev
 
-      - name: Push Docker image
-        run: docker push $IMAGE_NAME
+      - name: Configure Docker
+        run: |-
+          gcloud auth configure-docker $REPO_HOST
 
-      - name: Authenticate to Google Cloud for cloud run        
-        uses: google-github-actions/auth@v0
-        with:          
-           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}     
+      - name: Define image tag
+        env:
+          IMAGE_TAG: $REPO_HOST/${{ secrets.GCP_PROJECT_ID }}/mysampleapp/myapp
 
-      - id: deploy
-        name: Deploy Docker image
-        uses: "google-github-actions/deploy-cloudrun@v0"
-        with:
-          image: ${{ env.IMAGE_NAME }}
-          region: australia-southeast2
-          service: app
-          flags: --port=8080
-
-      # Example of using the output
-      - name: Test URL
-        run: curl "${{ steps.deploy.outputs.url }}"
+      - name: Build and push image to Google Artifact Registry
+        run: |-
+          docker build -t $IMAGE_TAG .
+          docker push $IMAGE_TAG
