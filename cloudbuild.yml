@@ -1,0 +1,11 @@
+steps:
+- name: 'gcr.io/cloud-builders/git'
+  args: ['clone', 'https://github.com/your-repo.git']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'australia-southeast2-docker.pkg.dev/proj-kub-project/mysampleapp/myapp:yellow', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'australia-southeast2-docker.pkg.dev/proj-kub-project/mysampleapp/myapp:yellow']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['run', 'deploy', 'app', '--image=australia-southeast2-docker.pkg.dev/proj-kub-project/mysampleapp/myapp:yellow', '--region=australia-southeast2', '--port=8080']
+images:
+- 'australia-southeast2-docker.pkg.dev/proj-kub-project/mysampleapp/myapp:yellow'
