@@ -24,10 +24,11 @@ jobs:
         run: |-
             gcloud auth configure-docker $REPO_HOST 
           
-      - name: Build and push image to Google Artifact Registry
-        run: |-
-          docker build -t $IMAGE_NAME .
-          docker push $IMAGE_NAME 
+      - name: Build Docker image
+        run: docker build . -t $IMAGE_NAME      
+
+      - name: Push Docker image
+        run: docker push $IMAGE_NAME
           
       - id: deploy
         name: Deploy Docker image
