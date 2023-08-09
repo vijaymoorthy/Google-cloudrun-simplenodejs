@@ -25,10 +25,10 @@ jobs:
             gcloud auth configure-docker $REPO_HOST 
           
       - name: Build Docker image
-        run: docker build . -t $IMAGE_NAME      
+        run: docker build . -t $IMAGE_TAG      
 
       - name: Push Docker image
-        run: docker push $IMAGE_NAME
+        run: docker push $IMAGE_TAG
           
       - id: deploy
         name: Deploy Docker image
