@@ -7,7 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REPO_HOST: australia-southeast2-docker.pkg.dev          
-      IMAGE_TAG: $REPO_HOST/proj-kub-project/mysampleapp/myapp:yellow
+      IMAGE_TAG: australia-southeast2-docker.pkg.dev/proj-kub-project/mysampleapp/myapp:yellow
+                
     steps:
       - name: Checkout      
         uses: actions/checkout@v2
@@ -21,12 +22,12 @@ jobs:
       
       - name: Configure Docker
         run: |-
-            gcloud auth configure-docker $REPO_HOST
+            gcloud auth configure-docker $REPO_HOST 
           
       - name: Build and push image to Google Artifact Registry
         run: |-
-          docker build -t $IMAGE_TAG .
-          docker push $IMAGE_TAG
+          docker build -t $IMAGE_NAME .
+          docker push $IMAGE_NAME 
           
       - id: deploy
         name: Deploy Docker image
