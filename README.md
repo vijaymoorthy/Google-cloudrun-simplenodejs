@@ -23,5 +23,8 @@
 ### the final
 ![image](https://github.com/vijaymoorthy/Google-cloudrun-simplenodejs/assets/5792365/5c0f4401-930d-4947-a3d6-d7741e2dda7f)
 
+# To execute github action 
+## remember to set the GCP_SERVICE_ACCOUNT_KEY
+
 
 
